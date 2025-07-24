@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MimeTypeToExtensionMapper {
-
     private static final Map<String, String> MIME_TO_EXTENSION = new HashMap<>();
 
     static {
         // Images
-        MIME_TO_EXTENSION.put("image/jpeg", "jpg");
+        MIME_TO_EXTENSION.put("image/jpeg", "jpeg");
+        MIME_TO_EXTENSION.put("image/jpg","jpg");
         MIME_TO_EXTENSION.put("image/png", "png");
         MIME_TO_EXTENSION.put("image/gif", "gif");
         MIME_TO_EXTENSION.put("image/webp", "webp");
@@ -62,6 +62,7 @@ public class MimeTypeToExtensionMapper {
     }
 
     public static String getExtensionFromMimeType(String mimeType) {
+
         return MIME_TO_EXTENSION.getOrDefault(mimeType.toLowerCase(), "bin");
     }
 }
