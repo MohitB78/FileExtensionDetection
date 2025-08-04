@@ -29,16 +29,13 @@ public class FileController {
             res.put("FileName", fileName);
             res.put("Desired Extension", result);
             res.put("Found Extension",Extension);
-//            System.out.println("FoundExtension: "+Extension);
-//            System.out.println("Desired Extension: "+result);
             if(Extension.isEmpty())return new ResponseEntity<>(res,HttpStatus.NOT_ACCEPTABLE);
-
-            if (areExtensionsEquivalent(result,Extension)) {
+            if (areExtensionsEquivalent(result,Extension) || (result.equalsIgnoreCase("txt") && Extension.equalsIgnoreCase("csv"))) {
                 res.put("Status", "Valid");
-                System.out.print(res.toString());
+                System.out.println(res.toString());
                 return new ResponseEntity<>(res, HttpStatus.OK);
             }
-            System.out.print(res.toString());
+            System.out.println(res.toString());
             res.put("Status", "Not Valid");
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
         } catch (IOException e) {
@@ -68,3 +65,58 @@ public class FileController {
         return e1.equals(e2);
     }
 }
+
+
+//package com.example.demo.Controller;
+
+//import com.example.demo.Service.FileExtensionServiceWithTika;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.multipart.MultipartFile;
+//
+//import java.io.IOException;
+//import java.util.HashMap;
+//import java.util.Map;
+//
+//@RestController
+//@RequestMapping("/file")
+//public class FileController {
+//
+//    @Autowired
+//    private FileExtensionServiceWithTika fileExtensionServiceWithTika;
+//
+//    @PostMapping("/detect")
+//    public ResponseEntity<Map<String, String>> detectFile(@RequestParam("file") MultipartFile file) {
+//        Map<String, String> res = new HashMap<>();
+//        String fileName = file.getOriginalFilename();
+//        String foundExtension = (fileName != null && fileName.contains("."))
+//                ? fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase()
+//                : "";
+//
+//        try {
+//            // Validate file content using Tika
+//            String result = fileExtensionServiceWithTika.validateFile(file);
+//
+//            res.put("FileName", fileName != null ? fileName : "");
+//            res.put("Desired Extension",result);
+//            res.put("Found Extension", foundExtension);
+//            res.put("Status", "Valid");
+//
+//            if (foundExtension.isEmpty()) {
+//                return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+//            }
+//
+//            return new ResponseEntity<>(res, HttpStatus.OK);
+//
+//        } catch (IOException e) {
+//            res.put("Error", "I/O error occurred while detecting file extension");
+//            return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+//
+//        } catch (Exception e) {
+//            res.put("Error", "Unexpected error occurred while detecting file extension");
+//            return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//}

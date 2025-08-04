@@ -105,6 +105,7 @@ public class FileControllerService {
 
         return "application/octet-stream";
     }
+
     public static boolean isProbablyTextFile(MultipartFile multipartFile) {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             byte[] buffer = new byte[512]; // Read first 512 bytes
@@ -124,37 +125,39 @@ public class FileControllerService {
         }
     }
 
-//    public String findExtensionOfFile(MultipartFile file) throws IOException {
-//        byte[] fileBytes = file.getBytes();
-//        String mimeType = detectMimeType(fileBytes);
-//        String extension = MimeTypeToExtensionMapper.getExtensionFromMimeType(mimeType);
-//     if (extension.equalsIgnoreCase("bin"))
-//            if (isProbablyTextFile(file))
-//                return "txt";
-//        if ("application/octet-stream".equalsIgnoreCase(mimeType) && isProbablyTextFile(file)) {
-//            if (fileBytes.length >= 4) {
-//                String headerHex = String.format("%02X%02X%02X%02X",
-//                        fileBytes[0], fileBytes[1], fileBytes[2], fileBytes[3]);
-//                if (headerHex.startsWith("504B") || headerHex.startsWith("D0CF")) {
-//                    String ex = MimeTypeToExtensionMapper.getExtensionFromMimeType(mimeType);
-//                    return ex;
-//                }
-//            }
-//            return "txt";
-//        }
-//
-//        return extension;
-//    }
 
     public String findExtensionOfFile(MultipartFile file) throws IOException {
         byte[] fileBytes = file.getBytes();
 
         String mimeType = detectMimeType(fileBytes);
-        String temp1 = MimeTypeToExtensionMapper.getExtensionFromMimeType(mimeType);
-        if (temp1.equalsIgnoreCase("bin"))
-            if (isProbablyTextFile(file))
-                return "txt";
 
+        String temp1 = MimeTypeToExtensionMapper.getExtensionFromMimeType(mimeType);
+        if (temp1.equalsIgnoreCase("bin")) {
+            if (isProbablyTextFile(file)) {
+                return "txt";
+            }
+        }
         return MimeTypeToExtensionMapper.getExtensionFromMimeType(mimeType);
     }
+//    private boolean validateFileContent(byte[] fileBytes, String mimeType) {
+//        try {
+//            switch (mimeType) {
+//                case "application/pdf":
+//                    try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(fileBytes)))) {
+//                        return pdfDoc.getNumberOfPages() > 0;
+//                    }
+//
+//                case "image/jpeg":
+//                case "image/png":
+//                case "image/gif":
+//                case "image/tiff":
+//                    BufferedImage img = ImageIO.read(new ByteArrayInputStream(fileBytes));
+//                    return img != null;
+//                default:
+//                    return true; // For other types, rely on header detection
+//            }
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
 }
